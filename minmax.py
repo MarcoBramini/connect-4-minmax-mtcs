@@ -3,22 +3,24 @@ import numpy as np
 
 
 class Connect4MinMax:
-    def __init__(self, c4, tt):
+    def __init__(self, c4, tt, iter_deep_max_depth, iter_deep_timeout_seconds):
         self.c4 = c4
         self.tt = tt
+        self.iter_deep_max_depth = iter_deep_max_depth
+        self.iter_deep_timeout_seconds = iter_deep_timeout_seconds
         self.analyzed_moves_count = 0
         self.skipped_moves_cache = 0
 
-    def predict_best_move(self, board, playerToMaximize, depth):
+    def predict_best_move(self, board, player_to_maximize):
         best_move = None
         start = time.time()
 
-        for depth in range(1, 8):
+        for depth in range(1, self.iter_deep_max_depth+1):
             end = time.time()
-            if end-start > 5:
+            if end-start > self.iter_deep_timeout_seconds:
                 break
             print("Try depth:", depth)
-            best_move = self.minmax(board, playerToMaximize, depth)
+            best_move = self.minmax(board, player_to_maximize, depth)
             print("Found move:", best_move)
             self.tt.print_stats()
             self.print_stats()

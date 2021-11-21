@@ -43,11 +43,11 @@ def get_player_name(player):
 
 # 34333
 if __name__ == "__main__":
-    max_depth = 5
+    max_depth = 8
 
     tt = Connect4TranspositionTable(max_depth)
     c4 = Connect4(NUM_COLUMNS, COLUMN_HEIGHT, FOUR)
-    minmax = Connect4MinMax(c4, tt)
+    minmax = Connect4MinMax(c4, tt, max_depth, 10)
 
     board = c4.init_board()
     print_board(board)
@@ -60,7 +60,7 @@ if __name__ == "__main__":
         start = time.time()
         print(c4.get_valid_moves(board))
         #col = int(input("Enter column(0-6):"))
-        ai_move = minmax.predict_best_move(board, initial_player, max_depth)
+        ai_move = minmax.predict_best_move(board, initial_player)
         end = time.time()
         print(get_player_name(initial_player), ai_move, end - start, "s")
         c4.play(board, ai_move[0], initial_player)
@@ -70,7 +70,7 @@ if __name__ == "__main__":
             break
 
         start = time.time()
-        ai_move = minmax.predict_best_move(board, -initial_player, max_depth)
+        ai_move = minmax.predict_best_move(board, -initial_player)
         end = time.time()
         print(get_player_name(-initial_player), ai_move, end - start, "s")
         c4.play(board, ai_move[0], -initial_player)
