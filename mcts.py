@@ -46,6 +46,7 @@ class Connect4MCTS:
     def __init__(self, c4, max_iter):
         self.max_iter = max_iter
         self.c4 = c4
+        self.analyzed_moves_count = 0
 
     def select_node(self, node):
         while len(node.children) != 0:
@@ -54,6 +55,7 @@ class Connect4MCTS:
 
     def expand_node(self, node):
         while len(node.available_moves) != 0:
+            self.analyzed_moves_count += 1
             move = np.random.choice(node.available_moves)
             node.add_child(move)
 
@@ -66,6 +68,7 @@ class Connect4MCTS:
             return player
 
         while len(moves := self.c4.get_valid_moves(board_copy)) != 0:
+            self.analyzed_moves_count += 1
             player = -player
             c = np.random.choice(moves)
             self.c4.play(board_copy, c, player)
@@ -100,3 +103,7 @@ class Connect4MCTS:
 
         print(root)
         return root, sorted(root.children, key=lambda child: child.wins/child.visits)[-1].move
+
+    def print_stats(self):
+        print(
+            f"MTCS: analyzed moves: {self.analyzed_moves_count}")

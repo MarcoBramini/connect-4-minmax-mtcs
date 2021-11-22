@@ -93,3 +93,4 @@ if __name__ == "__main__":
 
     tt.print_stats()
     minmax.print_stats()
+    mcts.print_stats()
