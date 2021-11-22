@@ -30,7 +30,8 @@ class Connect4MinMax:
     def minmax(self, board, player, depth, alpha=-np.Infinity, beta=np.Infinity):
         self.analyzed_moves_count += 1
         alpha_orig = alpha
-        # Try searching for cached move
+        # Try searching for a cached score for the current board
+        # or at least boundaries to narrow the research.
         # Cached valued is in the form: (score, flag)
         cached_move = self.tt.get(board, player, depth)
         if cached_move != None:

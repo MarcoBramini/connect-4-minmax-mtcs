@@ -6,12 +6,20 @@ from transposition_table import Connect4TranspositionTable
 import time
 import numpy as np
 
+# Game settings
 NUM_COLUMNS = 7
 COLUMN_HEIGHT = 6
 FOUR = 4
 
 PLAYER_ONE = 1
 PLAYER_TWO = -1
+
+# MinMax settings
+MINMAX_ITER_DEEP_MAX_DEPTH = 10
+MINMAX_ITER_DEEP_TIMEOUT = 10
+
+# MTCS settings
+MTCS_MAX_ITER = 5000
 
 
 class TermColors:
@@ -20,6 +28,7 @@ class TermColors:
     ENDC = '\x1b[0m'
 
 
+# Game interface methods
 def print_board(board):
     s = ""
     for c in range(COLUMN_HEIGHT-1, -1, -1):
@@ -42,15 +51,14 @@ def get_player_name(player):
     return "P2"
 
 
-# 34333
 if __name__ == "__main__":
-    max_depth = 8
-
-    tt = Connect4TranspositionTable(max_depth)
     c4 = Connect4(NUM_COLUMNS, COLUMN_HEIGHT, FOUR)
 
-    minmax = Connect4MinMax(c4, tt, max_depth, 10)
-    mcts = Connect4MCTS(c4, 5000)
+    tt = Connect4TranspositionTable(MINMAX_ITER_DEEP_MAX_DEPTH)
+    minmax = Connect4MinMax(
+        c4, tt, MINMAX_ITER_DEEP_MAX_DEPTH, MINMAX_ITER_DEEP_TIMEOUT)
+
+    mcts = Connect4MCTS(c4, MTCS_MAX_ITER)
 
     board = c4.init_board()
     print_board(board)

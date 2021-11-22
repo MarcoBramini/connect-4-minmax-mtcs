@@ -46,6 +46,7 @@ class Connect4MCTS:
     def __init__(self, c4, max_iter):
         self.max_iter = max_iter
         self.c4 = c4
+        self.total_analyzed_moves_count = 0
         self.analyzed_moves_count = 0
 
     def select_node(self, node):
@@ -87,23 +88,25 @@ class Connect4MCTS:
         iterations = 0
         while iterations < self.max_iter:
             # Selection
-            # Select a node for expansion
             selected_node = self.select_node(root)
 
             # Expansion
-            # Expand the selected node
             self.expand_node(selected_node)
 
             # Simulation
             sim_res = self.simulate(selected_node)
 
-            # Update
+            # Backpropagation
             self.backpropagate(selected_node, sim_res)
             iterations += 1
 
         print(root)
+        self.print_stats()
+        self.total_analyzed_moves_count += self.analyzed_moves_count
+        self.analyzed_moves_count = 0
+
         return root, sorted(root.children, key=lambda child: child.wins/child.visits)[-1].move
 
     def print_stats(self):
         print(
-            f"MTCS: analyzed moves: {self.analyzed_moves_count}")
+            f"MTCS: last research analyzed moves: {self.analyzed_moves_count} total analyzed moves: {self.total_analyzed_moves_count}")
