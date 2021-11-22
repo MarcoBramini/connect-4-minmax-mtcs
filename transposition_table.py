@@ -3,7 +3,7 @@ import numpy as np
 
 class Connect4TranspositionTable:
     def __init__(self, max_depth):
-        self.tt = {}
+        self.tt = {}  # This should be LRU :( )
         self.max_depth = max_depth
         self.total_hits = 0
 
