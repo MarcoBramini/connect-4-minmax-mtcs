@@ -1,4 +1,4 @@
-# Traveling Salesman Problem
+# Connect Four
 
 @author: Marco Bramini (s285913)  
 (based on the template provided by Prof. Giovanni Squillero)
@@ -6,7 +6,8 @@
 This repository contains an implementation of **MinMax** and **Monte Carlo Tree Search** solvers for Connect 4.
 
 The main method contains an example match between the two algorithms.
-They are configured to run the best match possible in a limited amount of time.
+They are configured to run the best match possible in a limited amount of time (from testing, each move can take maximum 50 seconds).
+A faster match can be obtained setting MTCS_MAX_ITER to 500 (or 1000).
 
 From the profiling, the most of the time spent is caused by the win checks, which could be better optimized (maybe a cache of all possible winning boards might help?).
 

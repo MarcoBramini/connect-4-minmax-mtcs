@@ -27,13 +27,16 @@ class Connect4MCNode:
         self.wins += simulation_result
 
     def __str__(self):
-        return f"{self.move} | {self.wins} | {self.visits} | {[f'{child.move} | {child.wins} | {child.visits} | {child.wins/child.visits}' for child in self.children]}"
+        prints = [
+            f"-> Move: {child.move} | Wins: {child.wins} | Visits: {child.visits} | W/V: {child.wins/child.visits}" for child in self.children]
+        return "\n".join(prints)
 
     def select_child_uct(self):
         max_score, max_child = -np.Infinity, None
         for child in self.children:
             if (child.visits == 0):
                 continue
+            # Selecting 2 as C seems to be better than sqrt(2) for exploration vs exploitation
             score = child.wins / child.visits + \
                 np.sqrt(2*np.log(self.visits) / child.visits)
             if score > max_score:
@@ -101,12 +104,12 @@ class Connect4MCTS:
             iterations += 1
 
         print(root)
-        self.print_stats()
         self.total_analyzed_moves_count += self.analyzed_moves_count
+        self.print_stats()
         self.analyzed_moves_count = 0
 
         return root, sorted(root.children, key=lambda child: child.wins/child.visits)[-1].move
 
     def print_stats(self):
         print(
-            f"MTCS: last research analyzed moves: {self.analyzed_moves_count} total analyzed moves: {self.total_analyzed_moves_count}")
+            f"MTCS -> last research analyzed moves: {self.analyzed_moves_count} | total analyzed moves: {self.total_analyzed_moves_count}")

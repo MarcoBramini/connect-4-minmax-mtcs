@@ -78,6 +78,7 @@ if __name__ == "__main__":
         start = time.time()
         ai_move = mcts.find_best_move(board, -initial_player)
         end = time.time()
+        print("\n")
         print(
             f"{get_player_name(-initial_player)} MTCS put a disk in column {ai_move[1]} ({end - start} seconds)")
         c4.play(board, ai_move[1], -initial_player)
@@ -91,6 +92,7 @@ if __name__ == "__main__":
         #col = int(input("Enter column(0-6):"))
         ai_move = minmax.predict_best_move(board, initial_player)
         end = time.time()
+        print("\n")
         print(
             f"{get_player_name(initial_player)} MINMAX put a disk in column {ai_move[0]} ({end - start} seconds)")
         c4.play(board, ai_move[0], initial_player)
