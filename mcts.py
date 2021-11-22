@@ -43,30 +43,11 @@ class Connect4MCNode:
 
 
 class Connect4MCTS:
-    def __init__(self, c4, max_iter, expansion_rate, exploitation_rate):
+    def __init__(self, c4, max_iter):
         self.max_iter = max_iter
-        self.expansion_rate = expansion_rate  # maybe 0.5
-        self.exploitation_rate = exploitation_rate  # maybe 0.5
         self.c4 = c4
 
     def select_node(self, node):
-        def random_depth(node, stop_prob):
-            current_node = node
-            while np.random.uniform() < stop_prob:
-                if len(current_node.children) == 0:
-                    return current_node
-                current_node = np.random.choice(current_node.children)
-            return current_node
-
-        r = np.random.uniform()
-        # If random value above expansion_rate, select low depths
-        if r > self.expansion_rate:
-            return random_depth(node, 0.4)
-        # Else select high depths
-        else:
-            return random_depth(node, 0.8)
-
-    def select_node2(self, node):
         while len(node.children) != 0:
             node = node.select_child_uct()
         return node
@@ -79,10 +60,10 @@ class Connect4MCTS:
     def simulate(self, node):
         board_copy = np.copy(node.board)
         player = node.player
-        if self.c4.four_in_a_row(board_copy, player):
-            return player
         if self.c4.four_in_a_row(board_copy, -player):
             return -player
+        elif self.c4.four_in_a_row(board_copy, player):
+            return player
 
         while len(moves := self.c4.get_valid_moves(board_copy)) != 0:
             player = -player
@@ -104,7 +85,7 @@ class Connect4MCTS:
         while iterations < self.max_iter:
             # Selection
             # Select a node for expansion
-            selected_node = self.select_node2(root)
+            selected_node = self.select_node(root)
 
             # Expansion
             # Expand the selected node

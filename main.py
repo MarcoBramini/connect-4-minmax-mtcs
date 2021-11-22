@@ -1,5 +1,6 @@
 
 from minmax import Connect4MinMax
+from mcts import Connect4MCTS
 from connect_four import Connect4
 from transposition_table import Connect4TranspositionTable
 import time
@@ -47,7 +48,9 @@ if __name__ == "__main__":
 
     tt = Connect4TranspositionTable(max_depth)
     c4 = Connect4(NUM_COLUMNS, COLUMN_HEIGHT, FOUR)
+
     minmax = Connect4MinMax(c4, tt, max_depth, 10)
+    mcts = Connect4MCTS(c4, 5000)
 
     board = c4.init_board()
     print_board(board)
@@ -55,28 +58,37 @@ if __name__ == "__main__":
     initial_player = PLAYER_ONE
     if np.random.uniform() > .5:
         initial_player = PLAYER_TWO
-    while True:
 
+    rounds = 0
+    while True:
+        if len(c4.get_valid_moves(board)) == 0:
+            print("MTCS and MINMAX tied!")
+            break
+
+        rounds += 1
+        print("MTCS is thinking...")
         start = time.time()
-        print(c4.get_valid_moves(board))
+        ai_move = mcts.find_best_move(board, -initial_player)
+        end = time.time()
+        print(
+            f"{get_player_name(-initial_player)} MTCS put a disk in column {ai_move[1]} ({end - start} seconds)")
+        c4.play(board, ai_move[1], -initial_player)
+        print_board(board)
+        if c4.four_in_a_row(board, -initial_player):
+            print(f"{get_player_name(-initial_player)} MTCS won in {rounds} rounds!")
+            break
+
+        print("MINMAX is thinking...")
+        start = time.time()
         #col = int(input("Enter column(0-6):"))
         ai_move = minmax.predict_best_move(board, initial_player)
         end = time.time()
-        print(get_player_name(initial_player), ai_move, end - start, "s")
+        print(
+            f"{get_player_name(initial_player)} MINMAX put a disk in column {ai_move[0]} ({end - start} seconds)")
         c4.play(board, ai_move[0], initial_player)
         print_board(board)
         if c4.four_in_a_row(board, initial_player):
-            print(get_player_name(initial_player) + " won")
-            break
-
-        start = time.time()
-        ai_move = minmax.predict_best_move(board, -initial_player)
-        end = time.time()
-        print(get_player_name(-initial_player), ai_move, end - start, "s")
-        c4.play(board, ai_move[0], -initial_player)
-        print_board(board)
-        if c4.four_in_a_row(board, -initial_player):
-            print(get_player_name(-initial_player) + " won")
+            print(f"{get_player_name(initial_player)} MINMAX won in {rounds} rounds!")
             break
 
     tt.print_stats()
